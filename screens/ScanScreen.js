@@ -16,13 +16,13 @@ export default class ScanScreen extends React.Component{
         }
     }
 
-    getCameraPermissions = async (id) =>
+    getCameraPermissions = async () =>
     {
         const {status} = await Permissions.askAsync(Permissions.CAMERA);
 
         this.setState({
             hasCameraPermissions: status === "granted",
-            buttonState: id,
+            buttonState: 'clicked',
             scanned: false
         })
     }
@@ -50,6 +50,10 @@ export default class ScanScreen extends React.Component{
 
     render()
     {
+        const hasCameraPermissions = this.state.hasCameraPermissions
+        const scanned = this.state.scanned;
+        const buttonState = this.state.buttonState;
+
         if(this.state.buttonState === 'clicked' && hasCameraPermissions)
         {
             return(
@@ -60,6 +64,7 @@ export default class ScanScreen extends React.Component{
             )
         }
         else{
+            return(
             <View style = {styles.container}>
                 <View>
                     <Image 
@@ -68,22 +73,30 @@ export default class ScanScreen extends React.Component{
                     />
                 </View>
                 <View>
+                    <Text style = {styles.text}>
+                        Barcode Scanner
+                    </Text>
+                </View>
+                <View>
                     <TouchableOpacity
-                    onPress = {this.getCameraPermissions}
-                    style = {styles.button}
+                    onPress = {()=>{
+                        this.getCameraPermissions()
+                    }}
+                    style = {styles.permissionButton}
                     >
-                        <Text>Request Camera Permissions</Text>
+                        <Text style = {styles.permissionButtonText}>Request Camera Permissions</Text>
                     </TouchableOpacity>
                 </View>
                 <View>
                     <TouchableOpacity
                     onPress = {this.getCameraPermissions}
-                    style = {styles.button}
+                    style = {styles.scanButton}
                     >
-                        <Text>Scan</Text>
+                        <Text style = {styles.scanButtonText}>Scan</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            )
         }
     }
 }
@@ -94,10 +107,28 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: 'center',
     },
-    button: {
+    scanButton: {
         backgroundColor: 'yellow',
         width: 100,
         borderWidth: 1.5,
         borderLeftWidth: 0,
+        margin: 10
     },
+    scanButtonText: {
+        fontSize: 15,
+        textAlign: 'center',
+        marginTop: 10,
+    },
+    text: {
+        fontSize: 30,
+        margin: 20
+    },
+    permissionButton: {
+        margin: 20,
+        
+    },
+    permissionButtonText: {
+        textDecorationLine: 'underline',
+        fontSize: 15
+    }
 })
